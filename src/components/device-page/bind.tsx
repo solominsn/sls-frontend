@@ -30,19 +30,21 @@ export class Bind extends Component<PropsFromStore & Actions, {}> {
         setBindRules(copyRules);
     };
 
-    onBindClick = async (rule: BindRule) => {
+    onBindClick = async (rule: BindRule): Promise<void> => {
         const { device, createBind, getDeviceBinds } = this.props;
         await createBind(device.nwkAddr, rule)
+
+        await getDeviceBinds(device.nwkAddr);
         new Notyf().success(`Created bind rule`);
-        getDeviceBinds(device.nwkAddr);
 
     };
 
-    onUnBindClick = async (rule: BindRule) => {
+    onUnBindClick = async (rule: BindRule): Promise<void> => {
         const { device, removeBind, getDeviceBinds } = this.props;
         await removeBind(device.nwkAddr, rule);
+        await getDeviceBinds(device.nwkAddr);
         new Notyf().success(`Removed bind rule`);
-        getDeviceBinds(device.nwkAddr);
+
     };
 
     renderBindsTable(): ComponentChild {
@@ -50,26 +52,26 @@ export class Bind extends Component<PropsFromStore & Actions, {}> {
         return (
             <table class="table table-striped table-borderless">
                 <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Source Cluster/Ep</th>
-                    <th scope="col">DstNwkAddr</th>
-                    <th scope="col">DstEp</th>
-                    <th scope="col">Action</th>
-                </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Source Cluster/Ep</th>
+                        <th scope="col">DstNwkAddr</th>
+                        <th scope="col">DstEp</th>
+                        <th scope="col">Action</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    bindRules.map((rule, idx) => <BindRow
-                        key={idx}
-                        onUnBindClick={this.onUnBindClick}
-                        onBindClick={this.onBindClick}
-                        onChange={this.onRuleChange}
-                        device={device}
-                        idx={idx}
-                        rule={rule}
-                        devices={devices} />)
-                }
+                    {
+                        bindRules.map((rule, idx) => <BindRow
+                            key={idx}
+                            onUnBindClick={this.onUnBindClick}
+                            onBindClick={this.onBindClick}
+                            onChange={this.onRuleChange}
+                            device={device}
+                            idx={idx}
+                            rule={rule}
+                            devices={devices} />)
+                    }
                 </tbody>
             </table>
         );
@@ -79,9 +81,9 @@ export class Bind extends Component<PropsFromStore & Actions, {}> {
         const { device } = this.props;
         if (device) {
             return this.renderBindsTable();
-        } else {
-            return "Loading...";
         }
+        return "Loading...";
+
     }
 }
 

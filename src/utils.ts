@@ -26,22 +26,11 @@ export function chunkArray<T>(inputArr: T[], chunkSize: number): T[][] {
 
 export const encodeGetParams = (data: Dictionary<string | number>): string => Object.keys(data).map((key) => [key, data[key]].map(encodeURIComponent).join("=")).join("&");
 
-export const WSConnect = (): ReconnectingWebSocket => {
-    const { hostname } = document.location;
-    if (hostname === "localhost") {
-        const { search } = document.location;
-        if (search.indexOf("gate") > 0) {
-            return new ReconnectingWebSocket(`ws://192.168.1.209:81/log`);
-        }
-        return new ReconnectingWebSocket(`ws://localhost:8579`);
-    } else return new ReconnectingWebSocket(`ws://${document.location.hostname}:81/log`);
-};
-
 export const sanitizeModelNameForImageUrl = (modelName: string): string => {
     return modelName ? modelName.replace("/", "_") : null;
 };
 
-export const genDeviceImageUrl = (device: Device): string => (`https://raw.githubusercontent.com/slsys/Gateway/master/devices/png/${sanitizeModelNameForImageUrl(device.ModelId)}.png`);
+export const genDeviceImageUrl = (device: Device): string => (`https://slsys.github.io/Gateway/devices/png/${sanitizeModelNameForImageUrl(device.ModelId)}.png`);
 
 export type LoadableFileTypes = "js" | "css";
 
@@ -97,7 +86,7 @@ export const bitOps = {
 export const toHHMMSS = (secs: number): string => {
     const hours = Math.floor(secs / 3600);
     const minutes = Math.floor(secs / 60) % 60;
-    const seconds = secs % 60;
+    const seconds = Math.floor(secs % 60);
 
     return [hours, minutes, seconds]
         .map(v => v < 10 ? `0${v}` : v)

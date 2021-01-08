@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/camelcase */
 // Must be the first import
 
 
 
 
-if (process.env.NODE_ENV==='development') {
+if (process.env.NODE_ENV === 'development') {
     // Must use require here as import statements are only allowed
     // to exist at the top of a file.
     require("preact/debug");
@@ -22,25 +23,84 @@ import ConnectedCodeEditor from "./components/code-editor";
 import ConnectedDevicePage from "./components/device-page";
 import store from "./store";
 import { Provider } from "unistore/preact";
-import { h } from "preact";
+import { h, FunctionalComponent } from "preact";
+import { manager } from "./websocket";
 
-const DevicePageApp = () => (
+
+interface StateChangePayload {
+    name: string;
+    value: string | number | boolean;
+    ieeeAddr: string;
+
+}
+
+const applyStateChange = (data: StateChangePayload): void => {
+    const state = store.getState();
+
+    let { devices, forceRender } = state
+    const { device } = state;
+    const ts = Date.now() / 1000;
+    if (device && device.ieeeAddr === data.ieeeAddr) {
+        forceRender = ts;
+        device.st && (device.st[data.name] = data.value);
+        device.last_seen = ts;
+    }
+    devices = devices.map(d => {
+        if (d.ieeeAddr === data.ieeeAddr) {
+            forceRender = ts;
+            d.st && (d.st[data.name] = data.value);
+            d.last_seen = ts;
+        }
+        return d;
+    });
+    store.setState({ device, devices, forceRender });
+}
+
+const processZigbeData = (data): void => {
+    const { event, ...payload } = data;
+    switch (event) {
+        case "stateChange":
+            applyStateChange(payload as StateChangePayload);
+            break;
+        default:
+            break;
+
+    }
+}
+const processZigbeeEvent = ({ category, payload }): void => {
+    switch (category) {
+        case "zigbee":
+            processZigbeData(payload);
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+console.log("use `copy(wsEventsData)` to copy events log");
+manager.subscribe("zigbee", processZigbeeEvent);
+
+
+
+const DevicePageApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedDevicePage /></Provider>
 );
-const ZigbeeTableApp = () => (
+const ZigbeeTableApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedZigbeeTable /></Provider>
 );
 
-const MapApp = () => (
+const MapApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedMap /></Provider>
 );
-const DiscoveryApp = () => (
+const DiscoveryApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedDiscovery /></Provider>
 );
-const LogViewerApp = () => (
+const LogViewerApp : FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedLogViewer /></Provider>
 );
-const CodeEditorApp = () => (
+const CodeEditorApp : FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedCodeEditor /></Provider>
 );
 

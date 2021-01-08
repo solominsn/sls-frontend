@@ -7,6 +7,7 @@ import Bind from "./bind";
 import DeviceInfo from "./info";
 import TabPanel, { TabInfo } from "../tab-panel";
 import style from "./style.css";
+import WebsocketManager from "../../websocket";
 
 interface DevicePageState {
     dev: string;
@@ -29,6 +30,8 @@ export class DevicePage extends Component<Actions & GlobalState, DevicePageState
         this.initPage();
     }
 
+
+
     initPage(): void {
         const { dev } = this.state;
         const { getDeviceInfo, getZigbeeDevicesList, getDeviceBinds } = this.props;
@@ -36,7 +39,6 @@ export class DevicePage extends Component<Actions & GlobalState, DevicePageState
         getDeviceInfo(dev);
         getDeviceBinds(dev);
         getZigbeeDevicesList(true);
-
     }
 
     render(): ComponentChild {
@@ -74,6 +76,6 @@ export class DevicePage extends Component<Actions & GlobalState, DevicePageState
     }
 }
 
-const mappedProps = ["isLoading", "isError"];
+const mappedProps = ["isLoading", "isError", "device"];
 const ConnectedDevicePage = connect<{}, DevicePageState, GlobalState, Actions>(mappedProps, actions)(DevicePage);
 export default ConnectedDevicePage;

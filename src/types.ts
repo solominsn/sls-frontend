@@ -7,7 +7,7 @@ export type Dictionary<V> = { [index: string]: V }
 export interface DeviceStats {
     linkquality?: number;
     battery?: number;
-    [k: string]: string | number;
+    [k: string]: string | number| boolean;
 }
 
 export const inteviewsCount = 4;
@@ -42,8 +42,8 @@ export interface Cluster {
 
 export interface Endpoint {
     "profId": string;
-    "In": Dictionary<true>;
-    "Out": Dictionary<true>;
+    "In"?: Dictionary<true>;
+    "Out"?: Dictionary<true>;
     "devId": string;
 }
 
@@ -65,6 +65,7 @@ export enum PowerSource {
 }
 
 export interface Device {
+    change?: number;
     /** A 64-bit IEEE address (also called MAC address or Extended address) */
     ieeeAddr?: string | undefined;
     /** A 16-bi network address */
@@ -100,7 +101,7 @@ export interface FileDescriptor extends Named {
 }
 
 
-export interface BindRule extends Dictionary<string|number> {
+export interface BindRule extends Dictionary<string | number> {
     id?: number;
     DstNwkAddr: string;
     ClusterId: number;
@@ -109,3 +110,16 @@ export interface BindRule extends Dictionary<string|number> {
 }
 
 export type SortDirection = "asc" | "desc";
+
+export interface TouchLinkDevice {
+    Channel: number;
+    LinkQuality: number;
+    PanId: number;
+    TS: number;
+    ieeeAddr: string;
+}
+export interface TouchLinkScanApiResponse {
+    TS: number;
+    devices: TouchLinkDevice[];
+    currentChannel: number;
+}

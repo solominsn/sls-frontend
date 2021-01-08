@@ -2,12 +2,13 @@ import { Component, ComponentChild, createRef, h } from "preact";
 import style from "./style.css";
 import cx from "classnames";
 import { Notyf } from "notyf";
-import { GlobalState } from "../../store";
+import store, { GlobalState } from "../../store";
 import actions, { Actions } from "../../actions";
 import { connect } from "unistore/preact";
 import { useEffect } from "preact/hooks";
+import { manager } from "../../websocket";
 
-export enum LogLevel {
+export const enum LogLevel {
     LOG_OFF,
     LOG_NORMAL,
     LOG_VERBOSE,
@@ -28,33 +29,42 @@ export class LogViewer extends Component<GlobalState & Actions, LogViewerState> 
         };
     }
 
-    componentDidMount(): void {
+    async componentDidMount(): Promise<void> {
         const { fetchLogsBuffer, getCurrentLogLevel } = this.props;
-        fetchLogsBuffer().then(() => setTimeout(this.scrollToBottom, 500));
-        getCurrentLogLevel().then();
+        await fetchLogsBuffer();
+        setTimeout(this.scrollToBottom, 500);
+        await getCurrentLogLevel();
+
+        manager.subscribe("log", (data) => {
+            const { logs } = store.getState();
+            const copyLogs = [...logs, data.payload as string];
+            store.setState({ logs: copyLogs });
+        });
     }
 
 
-    onFollowLogChange = (e: Event) => {
+    onFollowLogChange = (e: Event): void => {
         e.preventDefault();
         const { followLog } = this.state;
         this.setState({ followLog: !followLog });
     };
 
-    onClearScreenClick = (e: Event) => {
+    onClearScreenClick = (e: Event): void => {
         const { clearLogs } = this.props;
         clearLogs();
     };
-    onClearCacheClick = (e: Event) => {
+    onClearCacheClick = async (e: Event): Promise<void> => {
         const { clearLogsBuffer } = this.props;
-        clearLogsBuffer().then(() => new Notyf().success("Cache cleared"));
+        await clearLogsBuffer();
+        new Notyf().success("Cache cleared");
     };
 
-    onLogLevelChange = (e: Event) => {
+    onLogLevelChange = async (e: Event): Promise<void> => {
         const { setLogLevel, getCurrentLogLevel } = this.props;
         const { value } = e.target as HTMLInputElement;
-        const logLevel = parseInt(value);
-        setLogLevel(logLevel).then(() => getCurrentLogLevel());
+        const logLevel = parseInt(value, 10);
+        await setLogLevel(logLevel);
+        getCurrentLogLevel();
     };
 
 
