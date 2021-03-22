@@ -2,14 +2,16 @@
 }
 
 .new-file {
-    position: absolute;
+	position: sticky;
     bottom: 0;
     width: 100%;
 }
 
 
 .sidebar-wrapper {
-    /*min-height: 100vh;*/
+	/*overflow-x:hidden;
+	overflow-y:auto;
+	padding-right:40px;*/
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;

@@ -1,0 +1,22 @@
+body {
+    padding-top: 5rem;
+    background-color: #eef5f9 !important;
+}
+
+        html, body {
+        height: 100%;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-color: #d7dfe3;
+        border-radius: 4px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    #editor {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }      

@@ -163,7 +163,7 @@ export class CodeEditor extends Component<GlobalState & Actions, CodeEditorState
                 [style.toggled]: !sideBarIsVisible
             })}>
 
-                <div class={cx("bg-light border-right position-relative", style["sidebar-wrapper"])}>
+                <div class={cx("bg-light border-right position-relative h-100", style["sidebar-wrapper"])}>
                     <div class={style["sidebar-heading"]}>Files</div>
                     <div class="list-group list-group-flush">
 
@@ -206,7 +206,7 @@ export class CodeEditor extends Component<GlobalState & Actions, CodeEditorState
 
 
                     <div class="h-75">
-                        <div class={"h-75"}>
+                        <div class={"h-100"}>
                             <CodeMirror height={"100%"} width={"100%"} code={currentFileContent} config={config}
                                 onChange={this.onCodeChange} />
                         </div>
