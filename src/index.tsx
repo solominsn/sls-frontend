@@ -13,6 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // const poly = require("preact-cli/lib/lib/webpack/polyfills");
 import "notyf/notyf.min.css";
+import "./main.css";
 
 import habitat from "preact-habitat";
 import ConnectedMap from "./components/map";

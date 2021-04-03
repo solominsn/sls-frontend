@@ -80,7 +80,7 @@ export class LogViewer extends Component<GlobalState & Actions, LogViewerState> 
             followLog && this.scrollToBottom();
         }, [followLog, logs.length]);
 
-        return (<div class="container-fluid h-100">
+        return (<div class={cx("h-100 container-fluid", style["log-container"])}>
             <div class="row justify-content-around">
                 <div class="col-sm-6 my-1">
                     <div class="btn-group" role="group" aria-label="Basic example">

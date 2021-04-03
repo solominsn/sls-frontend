@@ -1,5 +1,6 @@
 declare namespace StyleCssNamespace {
     export interface IStyleCss {
+        "log-container": string;
         "log-line": string;
         "log-line-num": string;
         "log-main": string;

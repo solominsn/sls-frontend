@@ -109,13 +109,13 @@ module.exports = (env, args) => {
 			],
 		},
 		devServer: {
-			before(app) {
-				app.use(apiMocker('/api', 'api-mocks/api'));
-				startWsMock();
+			//before(app) {
+			//	app.use(apiMocker('/api', 'api-mocks/api'));
+			//	startWsMock();
+			//},
+			proxy: {
+				'/api': 'http://192.168.1.69'
 			},
-			// proxy: {
-			// 	'/api': 'http://192.168.1.209'
-			// },
 			headers: {
 				'Access-Control-Allow-Origin': '*'
 			},

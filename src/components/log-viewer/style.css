@@ -1,5 +1,8 @@
-.log-main {
-    /*height:100vh;*/
+.log-container {
+	padding-bottom:50px;
+}
+
+.log-main {   
     background-color: #222222;
     color: #d6d6d6;
     /*height: 90vh;*/
