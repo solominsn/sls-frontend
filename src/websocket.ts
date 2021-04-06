@@ -53,15 +53,15 @@ export default class WebsocketManager {
 
     private connect(): void {
         const { hostname } = document.location;
-        let wsUrl = `ws://${document.location.hostname}:81/log`;
+        let ssl = document.location.protocol === "https:";
+        let port = document.location.port ? parseInt(document.location.port) : (ssl ? 443 : 80);
+        let wsUrl = `ws${ssl?"s":""}://${document.location.hostname}:${port+1}/log`;
         if (hostname === "localhost") {
             const { search } = document.location;
-            if (hostname === "localhost") {
-                if (search.indexOf("gate") > 0) {
-                    wsUrl = `ws://192.168.1.209:81/log`;
-                } else {
-                    wsUrl = `ws://localhost:8579`;
-                }
+            if (search.indexOf("gate") > 0) {
+                wsUrl = `ws://192.168.1.209:81/log`;
+            } else {
+                wsUrl = `ws://localhost:8579`;
             }
         }
         this.ws = new ReconnectingWebSocket(wsUrl);
