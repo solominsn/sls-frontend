@@ -30,7 +30,8 @@ export const sanitizeModelNameForImageUrl = (modelName: string): string => {
     return modelName ? modelName.replace("/", "_") : null;
 };
 
-export const genDeviceImageUrl = (device: Device): string => (`https://slsys.github.io/Gateway/devices/png/${sanitizeModelNameForImageUrl(device.ModelId)}.png`);
+export const genDeviceImageUrl = (device: Device): string => ((device.cid > 0) ? `https://slsys.github.io/Gateway/devices/Zigbee/${device.cid}/icon.png`
+                                                                               : `https://slsys.github.io/Gateway/devices/png/${sanitizeModelNameForImageUrl(device.ModelId)}.png`);
 
 export type LoadableFileTypes = "js" | "css";
 

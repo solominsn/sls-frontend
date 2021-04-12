@@ -74,6 +74,9 @@ export interface Device {
     last_seen?: number | undefined;
     type?: DeviceType | undefined;
 
+    /** Unique converter ID */
+    cid?: number;
+
     ManufName?: string | undefined;
     ModelId?: string | undefined;
     /** Device status */
