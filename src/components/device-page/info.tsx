@@ -79,6 +79,9 @@ export class DeviceInfo extends Component<PropsFromStore, {}> {
                         <dd class="col-7"><PowerSourceComp source={device.PowerSource}
                                                            battery={device?.st?.battery} /></dd>
 
+                        <dt class="col-5">Converter Id</dt>
+                        <dd class="col-7">{device.cid}</dd>
+
                         <dt class="col-5">ManufName</dt>
                         <dd class="col-7">{device.ManufName}</dd>
 
