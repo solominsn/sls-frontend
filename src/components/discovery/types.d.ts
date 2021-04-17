@@ -27,6 +27,7 @@ export interface ZigbeePayload {
     ep?: number;
     ieeeAddr: string;
     type?: DeviceType;
+    cid?: number;
     ModelId?: string;
     ManufName?: string;
     duration?: number;

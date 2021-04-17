@@ -95,12 +95,12 @@ const EventRow: FunctionalComponent<EventRowProps> = ({ eventName, events }): VN
             return (
                 <Fragment>
                     <RowCol title="ManufName:" content={last(events).ManufName || <small>detecting...</small>} />
-                    <RowCol title="Model:" content={
+                    <RowCol title="Model:" content={last(events).ModelId || <small>detecting...</small>} />
+                    <RowCol title="Converter Id:" content={
                         <Fragment>
-                            <div>{last(events).ModelId}</div>
+                            <div>{last(events).cid}</div>
                             <SafeImg class={cx(style["device-image"])}
-                                     src={genDeviceImageUrl({ ModelId: last(events).ModelId } as Device)
-                                     } />
+                                     src={genDeviceImageUrl({ cid: last(events).cid, ModelId: last(events).ModelId } as Device)} />
                         </Fragment>
                     } />
                 </Fragment>
