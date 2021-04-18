@@ -67,6 +67,8 @@ export interface Actions {
     readFile(file: FileDescriptor): Promise<void>;
     deleteFile(file: FileDescriptor): Promise<void>;
 
+    identDevice(dev: string, cid: string): Promise<void>;
+
     renameDevice(old: string, newName: string): Promise<void>;
     removeDevice(dev: string, force: boolean): Promise<void>;
     refreshState(dev: string, name: string): Promise<void>;
@@ -267,6 +269,15 @@ const actions = (store: Store<GlobalState>): object => ({
     deleteFile(state, file: FileDescriptor): Promise<void> {
         store.setState({ isLoading: true });
         return callApi<void>("/api/files", "DELETE", { path: file.name }, undefined, (err, response) => {
+            store.setState({
+                isLoading: false,
+                isError: err
+            });
+        });
+    },
+    identDevice: (state, dev: string, cid: string): Promise<void> => {
+        store.setState({ isLoading: true });
+        return callApi<ApiResponse<void>>("/api/zigbee", "GET", { action: "ident", dev, cid }, undefined, (err, res) => {
             store.setState({
                 isLoading: false,
                 isError: err

@@ -226,7 +226,7 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                         href={genDeviceDetailsLink(route)}>{route}</a>)}</td>
                     <td className="text-left"><PowerSource source={device.PowerSource} battery={device.st?.battery} /></td>
                     <td>
-                        <DeviceControlGroup device={device} />
+                        <DeviceControlGroup device={device} simple={true} />
                     </td>
                 </tr>)}
 
