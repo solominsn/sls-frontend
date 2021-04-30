@@ -5,6 +5,7 @@
     text-decoration: none;
 }
 
+/*
 .value-col {
     max-width: 50px;
     position: relative;
@@ -13,13 +14,13 @@
 
 .value-col > input::-webkit-outer-spin-button,
 .value-col > input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
+    // display: none; <- Crashes Chrome on hover
     -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    margin: 0; // <-- Apparently some margin are still there even though it's hidden
 }
 
 .value-col > input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+    -moz-appearance:textfield; // Firefox
 }
 
 .refresh-btn {
@@ -32,6 +33,7 @@
 .value-col:hover > .refresh-btn {
     visibility: visible;
 }
+*/
 
 .props-row {
     vertical-align: middle;

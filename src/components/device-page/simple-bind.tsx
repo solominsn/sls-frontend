@@ -62,19 +62,21 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
                 {kv.map((param: DeviceParamTuple) => (
                     <tr class={style["props-row"]}>
                         <th scope="row">{param[0]}</th>
-                        <td class={style["value-col"]}>
+                        <td>
                             <UniversalEditor
-                                className="form-control-plaintext"
                                 value={param[1]}
                                 onChange={(value): Promise<void> => this.setStateValue(param[0], value)}
+                                onRefresh={(): Promise<void> => this.refresh(param[0])}
+                                titleRefresh={"Get"}
+                                titleEdit={"Set"}
                             />
-                            <button type="button" class={`btn ${style["refresh-btn"]}`}><i class="fas fa-sync" onClick={(): Promise<void> => this.refresh(param[0])} /></button>
                         </td>
                         <td>
                             <UniversalEditor
-                                className="form-control form-control-plaintext"
                                 value={simpleBindRules[param[0]] || ""}
                                 onChange={(value): Promise<void> => this.setSimpleBind(param[0], value)}
+                                allowEmpty={true}
+                                titleEdit={"Edit"}
                             />
                         </td>
                     </tr>
