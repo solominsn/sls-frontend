@@ -3,6 +3,7 @@ import { Component, ComponentChild, h } from "preact";
 interface ButtonProps<T> {
     item?: T;
     className?: string;
+    title?: string;
 
     onClick?(arg1: T): void;
 }
