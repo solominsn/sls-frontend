@@ -89,7 +89,10 @@ export class DeviceInfo extends Component<PropsFromStore, {}> {
                         <dt class="col-5">ModelId</dt>
                         <dd class="col-7">{device.ModelId}</dd>
 
-
+                        {(device.DateCode && device.DateCode != "null") ? <Fragment>
+                        <dt class="col-5">DateCode</dt>
+                        <dd class="col-7">{device.DateCode}</dd>
+                        </Fragment> : null}
 
                         <dt class="col-5">Routes</dt>
                         <dd class="col-7">{device?.Rtg?.map((route) => <a className={"d-block"}

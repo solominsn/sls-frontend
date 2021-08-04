@@ -79,6 +79,7 @@ export interface Device {
 
     ManufName?: string | undefined;
     ModelId?: string | undefined;
+    DateCode?: string | undefined;
     /** Device status */
     st?: DeviceStats | undefined;
     friendly_name?: string | undefined;
