@@ -81,7 +81,8 @@ export class DeviceInfo extends Component<PropsFromStore, {}> {
 
                         <dt class="col-5">Converter Id</dt>
                         <dd class="col-7">{device.cid > 0 ? 
-                                          <a className={"d-block"} href={"https://slsys.github.io/Gateway/devices/Zigbee/"+device.cid+"/"} target={"_blank"}>{device.cid}</a> : 0}</dd>
+                                          <a className={"d-block"} href={"https://slsys.io/action/supported_devices.html?device="+device.cid}
+                                                                   target={"_blank"}>{device.cid}&nbsp;<i className={"fas fa-info-circle"} /></a> : 0}</dd>
 
                         <dt class="col-5">ManufName</dt>
                         <dd class="col-7">{device.ManufName}</dd>
