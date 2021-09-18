@@ -1,7 +1,9 @@
 import { Component, ComponentChild, h } from "preact";
+import { Device, Dictionary, StateFlags } from "../../types";
 import { connect } from "unistore/preact";
 import actions, { Actions } from "../../actions";
 import { GlobalState } from "../../store";
+import Options from "./options";
 import SimpleBind from "./simple-bind";
 import Bind from "./bind";
 import DeviceInfo from "./info";
@@ -13,6 +15,9 @@ interface DevicePageState {
     dev: string;
     activeTab: string;
 }
+
+type DeviceParamTuple = [string, unknown];
+
 
 export class DevicePage extends Component<Actions & GlobalState, DevicePageState> {
     constructor() {
@@ -42,7 +47,7 @@ export class DevicePage extends Component<Actions & GlobalState, DevicePageState
     }
 
     render(): ComponentChild {
-        const { isLoading, isError } = this.props;
+        const { isLoading, isError, device } = this.props;
         const { activeTab } = this.state;
 
         const tabs: TabInfo[] = [
@@ -59,6 +64,14 @@ export class DevicePage extends Component<Actions & GlobalState, DevicePageState
                 TabComponent: <SimpleBind />
             }
         ];
+        if (device) {
+            const kv = Object.entries(device.st ?? {});
+            const st_flags: Dictionary<number> = device.st_flags ?? {};
+            if (kv.some((param: DeviceParamTuple) => (st_flags[param[0]] & StateFlags.Option))) {
+                tabs.push( { name: "Options", TabComponent: <Options /> } );
+            }
+        }
+
         return (<div class={"position-relative"}>
             {
                 isError ? <h1>{isError}</h1> : (
