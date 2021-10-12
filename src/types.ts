@@ -64,6 +64,13 @@ export enum PowerSource {
     EmergencyMains = 6
 }
 
+export enum StateFlags {
+    Cached = 1,
+    Hide = 2, // no send
+    HA_Disc = 4,
+    Option = 8
+}
+
 export interface Device {
     change?: number;
     /** A 64-bit IEEE address (also called MAC address or Extended address) */
@@ -82,6 +89,7 @@ export interface Device {
     DateCode?: string | undefined;
     /** Device status */
     st?: DeviceStats | undefined;
+    st_flags?: Dictionary<number> | undefined;
     friendly_name?: string | undefined;
     /** Routes list, each item is an 16-bit network address (also called logical address or short address). */
     Rtg?: string[] | undefined;

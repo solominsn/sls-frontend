@@ -14,7 +14,7 @@ interface PropsFromStore {
 type DeviceParamTuple = [string, unknown];
 
 
-export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
+export class Options extends Component<PropsFromStore & Actions, {}> {
     setStateValue = async (name: string, value: unknown): Promise<void> => {
         const { setStateValue, device, getDeviceInfo } = this.props;
         await setStateValue(device.nwkAddr, name, value);
@@ -22,17 +22,11 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
         getDeviceInfo(device.nwkAddr);
 
     };
-    setSimpleBind = async (name: string, value: unknown): Promise<void> => {
-        const { device, setSimpleBindValue, getDeviceInfo } = this.props;
-        await setSimpleBindValue(device.nwkAddr, name, value);
-        new Notyf().success(`Successfully updated simple bind value ${name}=${value}`);
-        getDeviceInfo(device.nwkAddr);
-    };
 
     render(): ComponentChild {
         const { device } = this.props;
         if (device) {
-            return this.renderSimpleBinds();
+            return this.renderOptions();
         }
         return "Loading...";
     }
@@ -43,23 +37,20 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
         new Notyf().success(`Requested state update ${device.nwkAddr} ${name}`);
     }
 
-    renderSimpleBinds(): ComponentChild {
+    renderOptions(): ComponentChild {
         const { device } = this.props;
-        const simpleBindRules: Dictionary<string> = device.SB ?? {};
         const st_flags: Dictionary<number> = device.st_flags ?? {};
         const kv = Object.entries(device.st ?? {});
-
 
         return <table class="table table-striped table-borderless">
             <thead>
                 <tr>
                     <th scope="col" />
                     <th scope="col">Value</th>
-                    <th scope="col">SB rule</th>
                 </tr>
             </thead>
             <tbody>
-                {kv.filter((param: DeviceParamTuple) => ((st_flags[param[0]] & StateFlags.Option) == 0)).map((param: DeviceParamTuple) => (
+                {kv.filter((param: DeviceParamTuple) => (st_flags[param[0]] & StateFlags.Option)).map((param: DeviceParamTuple) => (
                     <tr class={style["props-row"]}>
                         <th scope="row">{param[0]}</th>
                         <td>
@@ -71,22 +62,13 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
                                 titleEdit={"Set"}
                             />
                         </td>
-                        <td>
-                            <UniversalEditor
-                                value={simpleBindRules[param[0]] || ""}
-                                onChange={(value): Promise<void> => this.setSimpleBind(param[0], value)}
-                                allowEmpty={true}
-                                titleEdit={"Edit"}
-                            />
-                        </td>
                     </tr>
                 ))}
             </tbody>
         </table>;
-
     }
 }
 
 const mappedProps = ["device", "forceRender"];
 
-export default connect<{}, {}, GlobalState, PropsFromStore>(mappedProps, actions)(SimpleBind);
+export default connect<{}, {}, GlobalState, PropsFromStore>(mappedProps, actions)(Options);
