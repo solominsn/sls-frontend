@@ -1,7 +1,7 @@
 import createStore from "unistore";
 import devtools from "unistore/devtools";
 
-import { BindRule, Device, FileDescriptor, TouchLinkScanApiResponse } from "./types";
+import { BindRule, Device, FileDescriptor, JoinState, TouchLinkScanApiResponse } from "./types";
 import { TimeInfo } from "./components/discovery/types";
 import { LogLevel } from "./components/log-viewer";
 import { ApiResponse } from "./utils";
@@ -25,7 +25,7 @@ export interface GlobalState {
     currentFileContent: string;
     currentFile: FileDescriptor;
 
-
+    joinState: JoinState;
     touchlinkResuts: TouchLinkScanApiResponse | null;
     touchlinkScanInProgress: boolean;
 
@@ -47,6 +47,7 @@ const initialState: GlobalState = {
     executionResults: null,
     currentFileContent: "",
     currentFile: null,
+    joinState: null,
     touchlinkResuts: null,
     touchlinkScanInProgress: false
 };

@@ -1,4 +1,4 @@
-import { BindRule, Device } from "./types";
+import { BindRule, Device, CurrentJoinDuration } from "./types";
 import { ApiResponse, callApi, CallbackHandler } from "./utils";
 import { LogLevel } from "./components/log-viewer";
 import { TimeInfo } from "./components/discovery/types";
@@ -11,6 +11,10 @@ export const fetchTimeInfo = (callback: CallbackHandler<TimeInfo>): Promise<void
 };
 export const startInterview = (dev: string, state: number | "", callback: CallbackHandler<void>): Promise<void> => {
     return callApi("/api/zigbee", "POST", { dev, action: "setInterview", state }, undefined, callback);
+};
+
+export const getJoinDuration = (callback: CallbackHandler<CurrentJoinDuration>): Promise<void> => {
+    return callApi("/api/zigbee/join", "GET", {}, undefined, callback);
 };
 
 export const enableJoin = (duration = 255, target = "", callback: CallbackHandler<ApiResponse<void>>): Promise<void> => {

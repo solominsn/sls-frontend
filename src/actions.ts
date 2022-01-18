@@ -11,6 +11,7 @@ import {
     setSimpleBind,
     startInterview,
     fetchTimeInfo,
+    getJoinDuration,
     enableJoin,
     fetchLogsBuffer,
     getCurrentLogLevel,
@@ -48,6 +49,7 @@ export interface Actions {
 
     fetchTimeInfo(): Promise<void>;
 
+    getJoinDuration(): Promise<void>;
     setJoinDuration(duration: number, target: string): Promise<void>;
     fetchLogsBuffer(): Promise<void>;
     getCurrentLogLevel(): Promise<void>;
@@ -171,10 +173,25 @@ const actions = (store: Store<GlobalState>): object => ({
         });
     },
 
+    getJoinDuration(state): Promise<void> {
+        store.setState({ isLoading: true });
+        return getJoinDuration((err, response) => {
+            store.setState({
+                isError: err,
+                joinState: { enable: response.duration > 0, counter: response.duration },
+                isLoading: false,
+            } )
+        })
+    },
+
     setJoinDuration(state, duration = 255, target = ""): Promise<void> {
         store.setState({ isLoading: true });
         return enableJoin(duration, target, (err, time) => {
-            store.setState({ isLoading: false });
+            store.setState({
+                isError: err,
+                joinState: { enable: duration > 0, counter: duration },
+                isLoading: false
+            });
         });
     },
     async fetchLogsBuffer(state): Promise<void> {
