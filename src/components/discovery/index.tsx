@@ -42,22 +42,14 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
         message.timestamp = Date.now();
         const { events } = this.state;
         const { ieeeAddr } = message;
-        let { joinDuration, updateTimerId } = this.state;
+        let { joinDuration } = this.state;
         switch (message.event) {
             case "stateChange":
                 break;
             case "PermitJoin":
                 joinDuration = message.duration;
-                window.clearInterval(updateTimerId);
-                updateTimerId = window.setInterval(() => {
-                    const { joinDuration, updateTimerId } = this.state;
-                    if (joinDuration <= 0) {
-                        window.clearInterval(updateTimerId);
-                    } else {
-                        this.setState({ joinDuration: joinDuration - 1 });
-                    }
-
-                }, 1000);
+                // Update join timer in the store
+                this.updateJoinTimer(joinDuration);
                 break;
             default:
                 if (events[ieeeAddr]) {
@@ -68,14 +60,20 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
                 break;
 
         }
-        this.setState({ events, joinDuration, updateTimerId });
+        this.setState({ events });
     }
 
     componentDidMount(): void {
-        const { getZigbeeDevicesList } = this.props;
+        const { getZigbeeDevicesList, getJoinDuration } = this.props;
         console.log("use `copy(wsEventsData)` to copy events log");
         manager.subscribe("zigbee", this.processZigbeeEvent);
         getZigbeeDevicesList(true);
+        getJoinDuration().then(() => {
+            const { joinState } = this.props
+            if (joinState != null && joinState.enable) {
+                this.updateJoinTimer(joinState.counter);
+            }
+        });
     }
     renderTLdevices(): ComponentChild {
         const { touchlinkResuts, touchlinkRest, touchlinkIdentify } = this.props;
@@ -104,6 +102,21 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
 
     }
 
+    updateJoinTimer = async(duration): Promise<void> => {
+        let { updateTimerId } = this.state;
+        window.clearInterval(updateTimerId);
+        updateTimerId = window.setInterval(() => {
+            const { joinDuration, updateTimerId } = this.state;
+            if (joinDuration <= 0) {
+                window.clearInterval(updateTimerId);
+            } else {
+                this.setState({ joinDuration: joinDuration - 1 });
+            }
+
+        }, 1000);
+        this.setState({ updateTimerId, joinDuration: duration } );
+    };
+
     enableJoin = async (targetRouter = '0x0000'): Promise<void> => {
         const { setJoinDuration } = this.props;
         await setJoinDuration(255, targetRouter);
@@ -119,8 +132,13 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
 
     renderJoinButton(): ComponentChild {
         const { joinDuration } = this.state;
-        const { devices } = this.props;
+        const { devices, joinState } = this.props;
         const routers = devices.filter(d => d.type == "Router");
+
+        if (joinState == null) {
+            return ;
+        }
+
         return (<div class="row h-100 justify-content-center align-items-center">
             {joinDuration <= 0 ? (
                 <div class="btn-group">
@@ -183,6 +201,6 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
     }
 }
 
-const mappedProps = ["isLoading", "time", "devices", "touchlinkResuts", "touchlinkScanInProgress"];
+const mappedProps = ["isLoading", "joinState", "time", "devices", "touchlinkResuts", "touchlinkScanInProgress"];
 const ConnectedDiscovery = connect<{}, DiscoveryState, GlobalState, Actions>(mappedProps, actions)(Discovery);
 export default ConnectedDiscovery;

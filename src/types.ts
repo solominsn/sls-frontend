@@ -105,6 +105,10 @@ export interface Device {
     Rcf?: unknown;
 }
 
+export interface JoinState {
+    enable: boolean;
+    counter: number;
+}
 
 export interface FileDescriptor extends Named {
     name: string;
@@ -122,6 +126,10 @@ export interface BindRule extends Dictionary<string | number> {
 }
 
 export type SortDirection = "asc" | "desc";
+
+export interface  CurrentJoinDuration {
+    duration: number;
+}
 
 export interface TouchLinkDevice {
     Channel: number;
