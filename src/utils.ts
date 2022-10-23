@@ -123,9 +123,9 @@ export function callApi<T>(url: string, method: HttMethod, params: Dictionary<an
     })
 }
 
-export const lastSeen = (device: Device, timeInfo: TimeInfo): string => {
-    if (device.last_seen && timeInfo) {
-        const lastSeen = timeInfo.ts - device.last_seen;
+export const lastSeen = (device: Device, timeInSeconds: number): string => {
+    if (device.last_seen && timeInSeconds) {
+        const lastSeen = timeInSeconds - device.last_seen;
         if (lastSeen < 0) {
             return "Now";
         }
