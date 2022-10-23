@@ -3,12 +3,11 @@ declare namespace StyleCssNamespace {
         "action-column": string;
         actions: string;
         adaptive: string;
+        addr: string;
         "device-image": string;
         "device-pic": string;
-        "ieee-addr": string;
         invisible: string;
         "manu-name": string;
-        "nwk-addr": string;
         zigbee: string;
     }
 }

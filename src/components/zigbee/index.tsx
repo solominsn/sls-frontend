@@ -18,7 +18,6 @@ import { isLeaveReqSend } from "../../binaryUtils";
 //TODO: proper type alias
 type SortColumns =
     "last_seen"
-    | "nwkAddr"
     | "friendly_name"
     | "ieeeAddr"
     | "ManufName"
@@ -165,15 +164,12 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                 <tr className="text-nowrap">
                     <th>#</th>
                     <th>Pic</th>
-                    <ActionTH<SortColumns> className={cx(style["nwk-addr"], style["action-column"])} column="nwkAddr"
+                    <ActionTH<SortColumns> className={cx(style["addr"], style["action-column"])} column="ieeeAddr"
                                            currentDirection={sortDirection} current={sortColumn}
-                                           onClick={onSortChange}>nwkAddr</ActionTH>
+                                           onClick={onSortChange}>Address</ActionTH>
                     <ActionTH<SortColumns> className={style["action-column"]} column="friendly_name"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>FriendlyName</ActionTH>
-                    <ActionTH<SortColumns> className={cx(style["ieee-addr"], style["action-column"])} column="ieeeAddr"
-                                           currentDirection={sortDirection} current={sortColumn}
-                                           onClick={onSortChange}>ieeeAddr</ActionTH>
                     <ActionTH<SortColumns> className={cx(style["manu-name"], style["action-column"])} column="ManufName"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange} titile="ManufName">Manuf</ActionTH>
@@ -206,11 +202,12 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                     <td className={style["device-pic"]}><SafeImg class={cx(style["device-image"])}
                                                                  src={genDeviceImageUrl(device)} />
                     </td>
-                    <td className={style["nwk-addr"]}><a
-                        href={genDeviceDetailsLink(device.nwkAddr)}>{device.nwkAddr}</a>
+                    <td className={style["addr"]}>
+                        <a href={genDeviceDetailsLink(device.nwkAddr)}>
+                            {device.ieeeAddr ? device.ieeeAddr : "<corrupted>"} ({device.nwkAddr})
+                        </a>
                     </td>
                     <td>{device.friendly_name}</td>
-                    <td className={style["ieee-addr"]}>{device.ieeeAddr ? device.ieeeAddr : "<corrupted>"}</td>
                     <td title={device.ManufName}
                         className={cx(style["manu-name"], "text-truncate", "text-nowrap", "position-relative")}>{device.ManufName}</td>
                     <td title={this.getSupportTitle(device)} className={cx("text-nowrap", {
