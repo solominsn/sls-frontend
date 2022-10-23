@@ -51,10 +51,11 @@ interface NodeProps extends MouseEventsResponderNode {
 const offlineTimeout = 3600 * 2;
 
 export const isOnline = (device: Device, timeInfo: TimeInfo | undefined): boolean => {
-    if (!timeInfo || !device.last_seen) {
+    const lastSeenTimestamp = device.st && (device.st.last_seen as number | undefined) || device.lastMessageTimestamp;
+    if (!timeInfo || !lastSeenTimestamp) {
         return true;
     }
-    return timeInfo.ts - device.last_seen < offlineTimeout;
+    return timeInfo.ts - lastSeenTimestamp < offlineTimeout;
 };
 
 interface NodeState {

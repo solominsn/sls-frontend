@@ -17,7 +17,7 @@ import { isLeaveReqSend } from "../../binaryUtils";
 
 //TODO: proper type alias
 type SortColumns =
-    "last_seen"
+    "st.last_seen"
     | "nwkAddr"
     | "friendly_name"
     | "ieeeAddr"
@@ -46,7 +46,7 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
         super();
         this.state = {
             sortDirection: "desc",
-            sortColumn: "last_seen",
+            sortColumn: "st.last_seen",
             currentTime: Math.round(Date.now() / 1000), // in seconds
         };
     }
@@ -198,7 +198,7 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                     <ActionTH<SortColumns> className={style["action-column"]} column="Interview.State"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>Interview</ActionTH>
-                    <ActionTH<SortColumns> className={style["action-column"]} column="last_seen"
+                    <ActionTH<SortColumns> className={style["action-column"]} column="st.last_seen"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>LastSeen</ActionTH>
                     <th>Routes</th>

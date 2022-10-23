@@ -30,8 +30,9 @@ const getTooltip = (device: Device, timeInfo: TimeInfo): string[] => {
         strings.push("A very strange device...");
     }
     if (device.type !== "Coordinator") {
-        if (device.last_seen && timeInfo) {
-            strings.push(`Last seen: ${lastSeen(device, timeInfo.ts)}`);
+        const deviceLastSeen = lastSeen(device, timeInfo.ts);
+        if (deviceLastSeen) {
+            strings.push(`Last seen: ${deviceLastSeen}`);
         }
         if (!isOnline(device, timeInfo)) {
             strings.push("Offline");
