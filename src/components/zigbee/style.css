@@ -143,15 +143,10 @@
     }
 }
 
-.nwk-addr {
-    max-width: 75px;
-}
-
-.ieee-addr {
-    max-width: 145px;
+.addr {
+    max-width: 220px;
     overflow: hidden;
     text-overflow: ellipsis;
-    direction: rtl;
 }
 
 .manu-name {

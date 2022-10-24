@@ -18,12 +18,12 @@ import { isLeaveReqSend } from "../../binaryUtils";
 //TODO: proper type alias
 type SortColumns =
     "st.last_seen"
-    | "nwkAddr"
     | "friendly_name"
     | "ieeeAddr"
     | "ManufName"
     | "st.linkquality"
     | "ModelId"
+    | "cid"
     | "Interview.State"
     | "PowerSource";
 
@@ -176,22 +176,21 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                 <tr className="text-nowrap">
                     <th>#</th>
                     <th>Pic</th>
-                    <ActionTH<SortColumns> className={cx(style["nwk-addr"], style["action-column"])} column="nwkAddr"
+                    <ActionTH<SortColumns> className={cx(style["addr"], style["action-column"])} column="ieeeAddr"
                                            currentDirection={sortDirection} current={sortColumn}
-                                           onClick={onSortChange}>nwkAddr</ActionTH>
+                                           onClick={onSortChange}>Address</ActionTH>
                     <ActionTH<SortColumns> className={style["action-column"]} column="friendly_name"
                                            currentDirection={sortDirection} current={sortColumn}
-                                           onClick={onSortChange}>FriendlyName</ActionTH>
-                    <ActionTH<SortColumns> className={cx(style["ieee-addr"], style["action-column"])} column="ieeeAddr"
-                                           currentDirection={sortDirection} current={sortColumn}
-                                           onClick={onSortChange}>ieeeAddr</ActionTH>
-                    <ActionTH<SortColumns> className={cx(style["manu-name"], style["action-column"])} column="ManufName"
+                                           onClick={onSortChange}>Friendly Name</ActionTH>
+                    <ActionTH<SortColumns> className={cx(style["manu-name"], style["action-column"])} column="ManufName" title="Manufacturer name"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange} titile="ManufName">Manuf</ActionTH>
                     <ActionTH<SortColumns> className={style["action-column"]} column="ModelId"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>ModelId</ActionTH>
-
+                    <ActionTH<SortColumns> className={style["action-column"]} column="cid" title="Converter ID"
+                                           currentDirection={sortDirection} current={sortColumn}
+                                           onClick={onSortChange}>CID</ActionTH>
                     <ActionTH<SortColumns> className={style["action-column"]} column="st.linkquality"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange} title="Link quality">Link</ActionTH>
@@ -200,34 +199,46 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                                            onClick={onSortChange}>Interview</ActionTH>
                     <ActionTH<SortColumns> className={style["action-column"]} column="st.last_seen"
                                            currentDirection={sortDirection} current={sortColumn}
-                                           onClick={onSortChange}>LastSeen</ActionTH>
+                                           onClick={onSortChange}>Last Seen</ActionTH>
                     <th>Routes</th>
-                    <ActionTH<SortColumns> className={style["action-column"]} column="PowerSource"
+                    <ActionTH<SortColumns> className={style["action-column"]} column="PowerSource" title="Power source"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>PS</ActionTH>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {sortedDevices.map((device: Device, index) => <tr className={cx({
+                {sortedDevices.map((device: Device, index) =>
+                <tr className={cx({
                     "table-danger": !device.ieeeAddr,
                     "table-warning": isLeaveReqSend(device.flags)
-                })}>
+                })} key={device.ieeeAddr + device.nwkAddr}>
                     <td className="font-weight-bold">{index + 1}</td>
                     <td className={style["device-pic"]}><SafeImg class={cx(style["device-image"])}
                                                                  src={genDeviceImageUrl(device)} />
                     </td>
-                    <td className={style["nwk-addr"]}><a
-                        href={genDeviceDetailsLink(device.nwkAddr)}>{device.nwkAddr}</a>
+                    <td className={style["addr"]}>
+                        <a href={genDeviceDetailsLink(device.nwkAddr)}>
+                            {device.ieeeAddr ? device.ieeeAddr : "<corrupted>"} ({device.nwkAddr})
+                        </a>
                     </td>
                     <td>{device.friendly_name}</td>
-                    <td className={style["ieee-addr"]}>{device.ieeeAddr ? device.ieeeAddr : "<corrupted>"}</td>
                     <td title={device.ManufName}
                         className={cx(style["manu-name"], "text-truncate", "text-nowrap", "position-relative")}>{device.ManufName}</td>
                     <td title={this.getSupportTitle(device)} className={cx("text-nowrap", {
                         "table-danger": device.supported == DeviceSupportStatus.UnSupported,
                         "table-warning": device.supported == DeviceSupportStatus.Unknown
-                    })}>{device.ModelId}</td>
+                    })}>
+                        {device.ModelId}
+                    </td>
+                    <td>
+                        {device.cid > 0 ?
+                        <a href={`https://slsys.io/action/supported_devices.html?device=${device.cid}`}
+                            rel="noopener noreferrer" target="_blank">
+                            {device.cid}
+                        </a>
+                         : 0}
+                    </td>
                     <td>{device.st?.linkquality}</td>
                     <td className={cx({
                         "table-warning": device.Interview?.State !== 4
