@@ -169,7 +169,8 @@ const actions = (store: Store<GlobalState>): object => ({
     },
     fetchTimeInfo(state): Promise<void> {
         return fetchTimeInfo((err, time) => {
-            store.setState({ time });
+            const timeOffset = Math.round(new Date().getTime() / 1000) - time.ts;
+            store.setState({ time, timeOffset });
         });
     },
 

@@ -15,6 +15,7 @@ export interface GlobalState {
     devices: Device[];
     bindRules: BindRule[];
     time: TimeInfo | undefined;
+    timeOffset: number;
     logs: string[];
     logLevel: LogLevel;
 
@@ -39,6 +40,7 @@ const initialState: GlobalState = {
     devices: [],
     bindRules: [{} as BindRule],
     time: undefined,
+    timeOffset: 0,
     logs: [],
     logLevel: LogLevel.LOG_DEBUG,
 

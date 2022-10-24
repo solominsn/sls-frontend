@@ -17,7 +17,7 @@ import { isLeaveReqSend } from "../../binaryUtils";
 
 //TODO: proper type alias
 type SortColumns =
-    "last_seen"
+    "st.last_seen"
     | "friendly_name"
     | "ieeeAddr"
     | "ManufName"
@@ -40,12 +40,14 @@ interface ZigbeeTableState {
 const storeKey = "ZigbeeTableState";
 
 export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableState> {
+    currentTimeUpdateTimer: ReturnType<typeof setInterval> | undefined;
+
     constructor() {
         super();
         this.state = {
             sortDirection: "desc",
-            sortColumn: "last_seen",
-            currentTime: Date.now()
+            sortColumn: "st.last_seen",
+            currentTime: Math.round(Date.now() / 1000), // in seconds
         };
     }
 
@@ -75,17 +77,26 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
         }
     };
 
-    loadData = (showLoading = true): void => {
+    loadData = async (showLoading = true): Promise<void> => {
         const {getZigbeeDevicesList, fetchTimeInfo} = this.props;
         getZigbeeDevicesList(showLoading);
-        fetchTimeInfo();
-        setInterval(fetchTimeInfo, 5000);
+        await fetchTimeInfo();
+        this.currentTimeUpdateTimer = setInterval(() => {
+            const currentTime = Math.round(Date.now() / 1000) + this.props.timeOffset;
+            this.setState( { currentTime });
+        }, 5000);
     };
 
 
     componentDidMount(): void {
         this.restoreState();
         this.loadData();
+    }
+
+    componentWillUnmount(): void {
+        if (this.currentTimeUpdateTimer) {
+            clearInterval(this.currentTimeUpdateTimer);
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -154,8 +165,8 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
     }
 
     renderDevicesTable(): ComponentChild {
-        const { sortColumn, sortDirection } = this.state;
-        const { time, devices } = this.props;
+        const { sortColumn, sortDirection, currentTime } = this.state;
+        const { devices } = this.props;
         const sortedDevices = orderBy<Device>(devices, [sortColumn], [sortDirection]);
         const { onSortChange } = this;
 
@@ -186,7 +197,7 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                     <ActionTH<SortColumns> className={style["action-column"]} column="Interview.State"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>Interview</ActionTH>
-                    <ActionTH<SortColumns> className={style["action-column"]} column="last_seen"
+                    <ActionTH<SortColumns> className={style["action-column"]} column="st.last_seen"
                                            currentDirection={sortDirection} current={sortColumn}
                                            onClick={onSortChange}>Last Seen</ActionTH>
                     <th>Routes</th>
@@ -232,7 +243,7 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
                     <td className={cx({
                         "table-warning": device.Interview?.State !== 4
                     })}>{this.renderInterviewState(device)}</td>
-                    <td>{lastSeen(device, time)}</td>
+                    <td>{lastSeen(device, currentTime)}</td>
                     <td>{device?.Rtg?.map((route) => <a className={"d-block"}
                         href={genDeviceDetailsLink(route)}>{route}</a>)}</td>
                     <td className="text-left"><PowerSource source={device.PowerSource} battery={device.st?.battery} /></td>
@@ -248,6 +259,6 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
     }
 }
 
-const mappedProps = ["isLoading", "time", "devices", "forceRender"];
+const mappedProps = ["isLoading", "timeOffset", "devices", "forceRender"];
 const ConnectedDevicePage = connect<{}, ZigbeeTableState, GlobalState, Actions>(mappedProps, actions)(ZigbeeTable);
 export default ConnectedDevicePage;
