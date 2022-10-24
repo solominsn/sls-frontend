@@ -16,17 +16,15 @@ type DeviceParamTuple = [string, unknown];
 
 export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
     setStateValue = async (name: string, value: unknown): Promise<void> => {
-        const { setStateValue, device, getDeviceInfo } = this.props;
+        const { setStateValue, device } = this.props;
         await setStateValue(device.nwkAddr, name, value);
         new Notyf().success(`Successfully updated state value ${name}=${value}`);
-        getDeviceInfo(device.nwkAddr);
 
     };
     setSimpleBind = async (name: string, value: unknown): Promise<void> => {
-        const { device, setSimpleBindValue, getDeviceInfo } = this.props;
+        const { device, setSimpleBindValue } = this.props;
         await setSimpleBindValue(device.nwkAddr, name, value);
         new Notyf().success(`Successfully updated simple bind value ${name}=${value}`);
-        getDeviceInfo(device.nwkAddr);
     };
 
     render(): ComponentChild {
