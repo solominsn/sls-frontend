@@ -123,12 +123,67 @@ export function callApi<T>(url: string, method: HttMethod, params: Dictionary<an
     })
 }
 
-export const lastSeen = (device: Device, timeInfo: TimeInfo): string => {
-    if (device.last_seen && timeInfo) {
-        const lastSeen = timeInfo.ts - device.last_seen;
-        if (lastSeen < 0) {
-            return "Now";
+export const lastSeen = (device: Device, timeInSeconds: number): string | undefined => {
+    const lastSeenTimestamp = device.st && (device.st.last_seen as number | undefined) || device.lastMessageTimestamp;
+    if (lastSeenTimestamp !== undefined) {
+        // Implementation like day.js // https://day.js.org/docs/en/display/from-now
+        const lastSeenDelta = lastSeenTimestamp - timeInSeconds;
+        if (Math.abs(lastSeenDelta) < 5) {
+            return 'just now';
         }
-        return toHHMMSS(lastSeen);
+        const relativeTime = {
+            future: 'in %s',
+            past: '%s ago',
+            s: '%d seconds',
+            m: 'a minute',
+            mm: '%d minutes',
+            h: 'an hour',
+            hh: '%d hours',
+            d: 'a day',
+            dd: '%d days',
+            M: 'a month',
+            MM: '%d months',
+            y: 'a year',
+            yy: '%d years'
+        };
+
+        const timings = {
+            second: 1,
+            minute: 60,
+            hour: 60 * 60,
+            day: 24 * 60 *60,
+            month: 30 * 24 * 60 *60,
+            year: 365 * 24 * 60 * 60,
+        };
+
+        const thresholds = [
+            { format: 's', rangeEnd: 44, numberOfSeconds: timings.second },
+            { format: 'm', rangeEnd: 89,  numberOfSeconds: timings.second },
+            { format: 'mm', rangeEnd: 44, numberOfSeconds: timings.minute },
+            { format: 'h', rangeEnd: 89, numberOfSeconds: timings.minute },
+            { format: 'hh', rangeEnd: 21, numberOfSeconds: timings.hour },
+            { format: 'd', rangeEnd: 35, numberOfSeconds: timings.hour },
+            { format: 'dd', rangeEnd: 25, numberOfSeconds: timings.day },
+            { format: 'M', rangeEnd: 45, numberOfSeconds: timings.day },
+            { format: 'MM', rangeEnd: 10, numberOfSeconds: timings.month },
+            { format: 'y', rangeEnd: 17, numberOfSeconds: timings.month },
+            { format: 'yy', numberOfSeconds: timings.year }
+        ];
+
+        let result: string;
+        for (let i = 0, n = thresholds.length; i < n; i += 1) {
+            let threshold = thresholds[i];
+            const abs = Math.round(Math.abs(lastSeenDelta / threshold.numberOfSeconds));
+            if (!threshold.rangeEnd || abs <= threshold.rangeEnd) {
+                if (abs <= 1 && i > 0) {
+                    threshold = thresholds[i - 1]; // 1 minutes -> a minute, 0 seconds -> 0 second
+                }
+                const format = relativeTime[threshold.format];
+                result = format.replace('%d', abs);
+                break;
+            }
+        }
+        const pastOrFuture = lastSeenDelta > 0 ? relativeTime.future : relativeTime.past;
+        return pastOrFuture.replace('%s', result);
     }
 };

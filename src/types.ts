@@ -78,7 +78,7 @@ export interface Device {
     /** A 16-bi network address */
     nwkAddr: string;
     /** Node last message timestamp */
-    last_seen?: number | undefined;
+    lastMessageTimestamp?: number | undefined;
     type?: DeviceType | undefined;
 
     /** Unique converter ID */

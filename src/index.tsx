@@ -44,20 +44,20 @@ const applyStateChange = (data: StateChangePayload): void => {
     if (device && device.ieeeAddr === data.ieeeAddr) {
         forceRender = ts;
         device.st && (device.st[data.name] = data.value);
-        device.last_seen = ts;
+        device.lastMessageTimestamp = ts;
     }
     devices = devices.map(d => {
         if (d.ieeeAddr === data.ieeeAddr) {
             forceRender = ts;
             d.st && (d.st[data.name] = data.value);
-            d.last_seen = ts;
+            d.lastMessageTimestamp = ts;
         }
         return d;
     });
     store.setState({ device, devices, forceRender });
 }
 
-const processZigbeData = (data): void => {
+const processZigbeeData = (data): void => {
     const { event, ...payload } = data;
     switch (event) {
         case "stateChange":
@@ -71,7 +71,7 @@ const processZigbeData = (data): void => {
 const processZigbeeEvent = ({ category, payload }): void => {
     switch (category) {
         case "zigbee":
-            processZigbeData(payload);
+            processZigbeeData(payload);
             break;
 
         default:
@@ -98,10 +98,10 @@ const MapApp: FunctionalComponent<{}> = () => (
 const DiscoveryApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedDiscovery /></Provider>
 );
-const LogViewerApp : FunctionalComponent<{}> = () => (
+const LogViewerApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedLogViewer /></Provider>
 );
-const CodeEditorApp : FunctionalComponent<{}> = () => (
+const CodeEditorApp: FunctionalComponent<{}> = () => (
     <Provider store={store}><ConnectedCodeEditor /></Provider>
 );
 
