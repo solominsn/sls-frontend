@@ -1,0 +1,17 @@
+.custom-switch {
+  line-height: 1.5;
+}
+
+.custom-switch .custom-control-label::before,
+.custom-switch .custom-control-label::after {
+  cursor: pointer;
+}
+
+.custom-switch .custom-control-input:disabled~.custom-control-label::before,
+.custom-switch .custom-control-input:disabled~.custom-control-label::after {
+  cursor: not-allowed;
+}
+
+.custom-switch .custom-control-input~.custom-control-label::after {
+  transition-duration: 50ms;
+}

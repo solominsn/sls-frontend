@@ -1,4 +1,4 @@
-import { Component, ComponentChild, Fragment, h } from "preact";
+import { Component, ComponentChild, h } from "preact";
 import { Device, Dictionary, StateFlags } from "../../types";
 import style from "./style.css";
 import UniversalEditor from "../universal-editor";
@@ -62,6 +62,7 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
                         <th scope="row">{param[0]}</th>
                         <td>
                             <UniversalEditor
+                                name={param[0] as string}
                                 value={param[1]}
                                 onChange={(value): Promise<void> => this.setStateValue(param[0], value)}
                                 onRefresh={(): Promise<void> => this.refresh(param[0])}
@@ -71,6 +72,7 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
                         </td>
                         <td>
                             <UniversalEditor
+                                name={param[0] as string}
                                 value={simpleBindRules[param[0]] || ""}
                                 onChange={(value): Promise<void> => this.setSimpleBind(param[0], value)}
                                 allowEmpty={true}
