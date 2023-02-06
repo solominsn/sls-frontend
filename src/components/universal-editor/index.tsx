@@ -1,7 +1,9 @@
 import { FunctionalComponent, h, RefObject, ComponentChild, JSX, Fragment } from "preact";
 import { forwardRef, useState } from "preact/compat";
+import styles from "./style.css";
 
 interface UniversalEditorProps {
+    name: string;
     value: unknown;
     valueFormatter?(value: unknown, isLoading: boolean): ComponentChild;
     onChange(value: unknown): Promise<void>;
@@ -27,23 +29,33 @@ const togglePairs = new Map<string | boolean, string | boolean>([
 
 // eslint-disable-next-line react/display-name
 const UniversalEditor: FunctionalComponent<UniversalEditorProps> = forwardRef((props, ref: RefObject<HTMLInputElement>) => {
-    const { value, onChange, onRefresh, allowEmpty, titleEdit, titleRefresh, ...rest } = props;
+    const { name, value, onChange, onRefresh, allowEmpty, titleEdit, titleRefresh, ...rest } = props;
     /* const isToggleParameter = togglePairs.has(value as string | boolean); */
     const valueFormatter = props.valueFormatter || ((value: unknown): ComponentChild => `${value}`);
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const editorType = typeof value === 'boolean'
+        ? 'checkbox'
+        : (name.startsWith('state') && typeof value === 'string' && /^ON|OFF$/i.test(value))
+            ? 'switch'
+            : 'default';
+
+
     const changeHandler: JSX.GenericEventHandler<HTMLInputElement> = async (event) => {
         try {
             setIsLoading(true);
             const { currentTarget } = event;
-            switch (currentTarget.type) {
+            switch (editorType) {
                 case "checkbox":
                     await onChange(currentTarget.checked);
                     break;
-                case "number":
-                    currentTarget.valueAsNumber != value && await onChange(currentTarget.valueAsNumber);
+                case "switch":
+                    await onChange(currentTarget.checked ? "ON" : "OFF");
                     break;
+                // case "number":
+                //     target.valueAsNumber != value && await onChange(target.valueAsNumber);
+                //     break;
                 default:
                     currentTarget.value != value && await onChange(currentTarget.value);
                     break;
@@ -76,12 +88,21 @@ const UniversalEditor: FunctionalComponent<UniversalEditorProps> = forwardRef((p
 
     let input: ComponentChild;
 
-    switch (typeof value) {
-        case "boolean":
+    switch (editorType) {
+        case "checkbox":
             input = <input ref={ref} {...rest} type="checkbox" checked={value as boolean} onChange={changeHandler} />;
             break;
         //case "number":
         /* input = <input step="any" ref={ref} {...rest} type="number" value={value} onBlur={changeHandler} />; */
+        case "switch":
+            input = <Fragment>
+                <button type="button" title={titleEdit} disabled={isLoading} class="btn btn-sm" onClick={editHandler}><i class="fas fa-edit" /></button>
+                <div class={`custom-control custom-switch ${styles['custom-switch']} ml-2`}>
+                    <input ref={ref} {...rest} disabled={isLoading} type="checkbox" class={`custom-control-input ${styles['custom-control-input']}`} id={`${name}switch`} checked={value !== 'OFF'} onChange={changeHandler} />
+                    <label class={`custom-control-label ${styles['custom-control-label']}`} for={`${name}switch`}>{valueFormatter(value, isLoading)}</label>
+                </div>
+            </Fragment>;
+            break;
         default:
             input = <Fragment>
                 <button type="button" title={titleEdit} disabled={isLoading} class="btn btn-sm" onClick={editHandler}><i class="fas fa-edit" /></button>

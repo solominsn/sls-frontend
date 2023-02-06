@@ -90,6 +90,7 @@ export class DeviceInfo extends Component<PropsFromStore & Actions, {}> {
                         <dt class="col-5">Friendly name</dt>
                         <dd class="col-7">
                             <UniversalEditor
+                                name="friendly_name"
                                 value={device.friendly_name || ""}
                                 valueFormatter={(value: unknown): ComponentChild => value ? `${value}` : <span class="text-muted">&lt;not set&gt;</span>}
                                 allowEmpty={true}

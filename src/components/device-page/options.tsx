@@ -55,6 +55,7 @@ export class Options extends Component<PropsFromStore & Actions, {}> {
                         <th scope="row">{param[0]}</th>
                         <td>
                             <UniversalEditor
+                                name={param[0]}
                                 value={param[1]}
                                 onChange={(value): Promise<void> => this.setStateValue(param[0], value)}
                                 onRefresh={(): Promise<void> => this.refresh(param[0])}
