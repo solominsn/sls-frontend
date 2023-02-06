@@ -82,7 +82,7 @@ export class ZigbeeTable extends Component<Actions & GlobalState, ZigbeeTableSta
         getZigbeeDevicesList(showLoading);
         await fetchTimeInfo();
         this.currentTimeUpdateTimer = setInterval(() => {
-            const currentTime = Math.round(Date.now() / 1000) + this.props.timeOffset;
+            const currentTime = Math.round(Date.now() / 1000) - this.props.timeOffset;
             this.setState( { currentTime });
         }, 5000);
     };
