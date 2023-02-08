@@ -22,9 +22,10 @@ export class SimpleBind extends Component<PropsFromStore & Actions, {}> {
 
     };
     setSimpleBind = async (name: string, value: unknown): Promise<void> => {
-        const { device, setSimpleBindValue } = this.props;
+        const { device, setSimpleBindValue, getDeviceInfo } = this.props;
         await setSimpleBindValue(device.nwkAddr, name, value);
         new Notyf().success(`Successfully updated simple bind value ${name}=${value}`);
+        getDeviceInfo(device.nwkAddr);
     };
 
     render(): ComponentChild {
