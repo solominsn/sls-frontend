@@ -169,8 +169,10 @@ const actions = (store: Store<GlobalState>): object => ({
     },
     fetchTimeInfo(state): Promise<void> {
         return fetchTimeInfo((err, time) => {
-            const timeOffset = Math.round(new Date().getTime() / 1000) - time.ts;
-            store.setState({ time, timeOffset });
+            if (!err) {
+                const timeOffset = Math.round(new Date().getTime() / 1000) - time.ts;
+                store.setState({ time, timeOffset });
+            }
         });
     },
 
@@ -179,7 +181,7 @@ const actions = (store: Store<GlobalState>): object => ({
         return getJoinDuration((err, response) => {
             store.setState({
                 isError: err,
-                joinState: { enable: response.duration > 0, counter: response.duration },
+                joinState: { enable: response?.duration > 0, counter: response?.duration },
                 isLoading: false,
             } )
         })
@@ -201,7 +203,7 @@ const actions = (store: Store<GlobalState>): object => ({
             store.setState({
                 isError: err,
                 isLoading: false,
-                logs: logs.split("\n")
+                logs: logs?.split("\n")
             });
         });
     },
@@ -211,7 +213,7 @@ const actions = (store: Store<GlobalState>): object => ({
             store.setState({
                 isError: err,
                 isLoading: false,
-                logLevel: response.result
+                logLevel: response?.result
             });
         });
     },
@@ -363,7 +365,7 @@ const actions = (store: Store<GlobalState>): object => ({
             store.setState({
                 isLoading: false,
                 isError: err,
-                touchlinkScanInProgress: result.currentChannel !== 0,
+                touchlinkScanInProgress: result?.currentChannel !== 0,
                 touchlinkResuts: result
             });
         });
