@@ -91,7 +91,7 @@ export class LogViewer extends Component<GlobalState & Actions, LogViewerState> 
                     </div>
                 </div>
                 <div class="col-sm-6 my-1">
-                    <div class="row justify-content-end">
+                    <div class="d-flex justify-content-end">
                         <div class="col-sm-4">
                             <select value={logLevel} class="custom-select" onChange={this.onLogLevelChange}>
                                 <option value={LogLevel.LOG_OFF} selected>LOG_OFF</option>
