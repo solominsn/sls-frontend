@@ -139,12 +139,12 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
             return ;
         }
 
-        return (<div class="row h-100 justify-content-center align-items-center">
+        return (<div class="d-flex h-100 justify-content-center align-items-center">
             {joinDuration <= 0 ? (
                 <div class="btn-group">
                     <Button<string> className="btn btn-success" onClick={this.enableJoin} item={'0x0000'}>Enable
                      join</Button>
-                    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Toggle</span>
                     </button>
                     <div class="dropdown-menu">
@@ -165,7 +165,7 @@ export class Discovery extends Component<GlobalState & Actions, DiscoveryState> 
     renderEmptyScreen(): ComponentChild {
         return (
             <Fragment>
-                <div class="row h-100 justify-content-center align-items-center">
+                <div class="d-flex h-100 justify-content-center align-items-center">
                     <h2>Nothing yet happened</h2>
                 </div>
                 {this.renderJoinButton()}
